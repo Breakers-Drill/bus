@@ -1,0 +1,35 @@
+services:
+  mqtt-cloud:
+    image: eclipse-mosquitto:2.0.18
+    container_name: mqtt-cloud
+    ports:
+      - "1884:1884"  # Внешний порт 1884, внутренний 1884
+      #- "9002:9002"  # Внешний порт 9002, внутренний 9002
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/logs:/mosquitto/logs
+    environment:
+      - MOSQUITTO_CONFIG_FILE=/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
+    networks:
+      - bus-monitor-network
+
+  mqtt-monitor:
+    build:
+      context: ./monitor
+      dockerfile: Dockerfile
+    container_name: bus-monitor
+    environment:
+      - MQTT_BROKER_URL=mqtt://mqtt-cloud:1884
+      - MQTT_TOPIC=${MQTT_TOPIC:-PLC/test}
+      - MQTT_CLIENT_ID=mqtt-monitor
+    restart: unless-stopped
+    networks:
+      - bus-monitor-network
+    depends_on:
+      - mqtt-cloud
+
+networks:
+  bus-monitor-network:
+    external: true 

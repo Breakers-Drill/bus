@@ -1,0 +1,24 @@
+{
+  "name": "bus-monitor-generator",
+  "version": "1.0.0",
+  "description": "Generator service for bus monitoring system",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mqtt": "^5.3.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "microservice",
+    "generator",
+    "bus-monitor"
+  ],
+  "author": "",
+  "license": "MIT"
+}

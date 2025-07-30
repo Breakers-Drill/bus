@@ -1,0 +1,39 @@
+services:
+  # MQTT Broker - Eclipse Mosquitto
+  mqtt-edge:
+    image: eclipse-mosquitto:2.0.18
+    container_name: mqtt-edge
+    ports:
+      - "1883:1883"      # MQTT порт
+      #- "9001:9001"      # WebSocket порт для веб-клиентов
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/logs:/mosquitto/logs
+    environment:
+      - TZ=Europe/Moscow
+    restart: unless-stopped
+    networks:
+      - bus-monitor-network
+
+  # Generator Service
+  generator:
+    build:
+      context: ./generator
+      dockerfile: Dockerfile
+    container_name: bus-generator
+    depends_on:
+      - mqtt-edge
+    environment:
+      - BUS_SERVICE_TYPE=mqtt
+      - MQTT_BROKER_URL=mqtt://mqtt-edge:1883
+      - MQTT_TOPIC=${MQTT_TOPIC:-PLC/test}
+      - MQTT_CLIENT_ID=bus-monitor-generator
+      - PRODUCER_INTERVAL=500
+    restart: unless-stopped
+    networks:
+      - bus-monitor-network
+
+networks:
+  bus-monitor-network:
+    external: true 
