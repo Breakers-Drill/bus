@@ -70,18 +70,6 @@ docker logs mqtt-edge
 docker logs bus-monitor-mqtt-cloud
 ```
 
-### Тестирование MQTT моста
-
-Отправьте сообщение на producer (порт 1883):
-```bash
-mosquitto_pub -h localhost -p 1883 -t "test/topic" -m "Hello from producer"
-```
-
-Проверьте, что сообщение дошло до consumer (порт 1884):
-```bash
-mosquitto_sub -h localhost -p 1884 -t "test/topic"
-```
-
 ## Архитектура
 
 ```
